@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset=utf-8 />
+<title>Phaser3 Img Previewer</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.22.0/phaser.min.js"></script>
+
+</head>
+<body>
+
+	<h1>First, upload images</h1>
+
+	<form id="form1" runat="server">
+    Costume Layer:<input type='file' id="imgInp1" />
+  </form>
+  <form id="form2" runat="server">
+    Section 1:<input type='file' id="imgInp2" />
+  </form>
+  <form id="form3" runat="server">
+    Section 2:<input type='file' id="imgInp3" />
+  </form>
+  <form id="form4" runat="server">
+    Section 3:<input type='file' id="imgInp4" />
+  </form>
+  <form id="form5" runat="server">
+    Silhoutte Layer:<input type='file' id="imgInp5" />
+  </form>
+
+  <p>Preview of last image uploaded:</p>
+  <img id="blah" src="#" alt="preview of a preview" />
+
+  <br>
+  <br>
+
+
+	<h1>Second, override colors and submit</h1>
+	<a href="https://htmlcolorcodes.com/">Uses HTML colorcodes, leave off the # though</a>
+	<p>Blanks are default / not-tinted</p>
+
+
+  <!-- <input id="launchPhaser" type="button" value="Launch Phaser!"  /> -->
+  <form id="formParams" >
+	  Background: #<input type="text" name="bgColor" value=""><br>
+	  Costume Layer: #<input type="text" name="costumeTint" value=""><br>
+	  Section 1: #<input type="text" name="sec1Tint" value=""><br>
+	  Section 2: #<input type="text" name="sec2Tint" value=""><br>
+	  Section 3: #<input type="text" name="sec3Tint" value=""><br>
+	  Silhoutte Layer: #<input type="text" name="silTint" value=""><br>
+	  <br>
+	  <input type="button" onclick="myFunction()" value="Submit">
+	</form>
+
+  <br>
+
+
+	<h1>Last, click inside viewer</h1>
+
+	<p>Note: Any changes after clicking the viewer below require a page refresh.</p>
+
+  <div id="phaser-img-previewer">testtt</div>
+
+
+  <script type="text/javascript">
+  	var files = [];
+
+  	var reader = new FileReader();
+		reader.onload = function (e) {
+			console.log("e onload",e);
+			files.push(e.target.result);
+		  $('#blah').attr('src', e.target.result);
+		}
+		   
+		function readURL(input) {
+		    if (input.files && input.files[0]) {
+		        reader.readAsDataURL(input.files[0]);
+		    }
+		}
+
+		$("#imgInp1").change(function(){
+		    readURL(this);
+		});
+		$("#imgInp2").change(function(){
+		    readURL(this);
+		});
+		$("#imgInp3").change(function(){
+		    readURL(this);
+		});
+		$("#imgInp4").change(function(){
+		    readURL(this);
+		});
+		$("#imgInp5").change(function(){
+		    readURL(this);
+		});
+
+		// document.getElementById("launchPhaser").onclick = function () { 
+		// 	alert('hello!'); 
+		// };
+
+		var bgColor = "ff0000";
+		var costumeTint,sec1Tint,sec2Tint,sec3Tint,silTint;
+
+		function myFunction() {
+		  var x = document.getElementById("formParams");
+
+		  console.log("color tints",x.elements);
+		  if(x.elements[0].value){
+		  	bgColor = x.elements[0].value;
+		  }
+		  if(x.elements[1].value){
+		  	costumeTint = x.elements[1].value;
+		  }
+		  if(x.elements[2].value){
+		  	sec1Tint = x.elements[2].value;
+		  }
+		  if(x.elements[3].value){
+		  	sec2Tint = x.elements[3].value;
+		  }
+		  if(x.elements[4].value){
+		  	sec3Tint = x.elements[4].value;
+		  }
+		  if(x.elements[5].value){
+		  	silTint = x.elements[5].value;
+		  }
+		  // var text = "";
+		  // var i;
+		  // for (i = 0; i < x.length ;i++) {
+		  //   text += x.elements[i].value + "<br>";
+		  // }
+		  // document.getElementById("demo").innerHTML = text;
+		}
+
+
+		var config = {
+		    type: Phaser.AUTO,
+		    width: 256,
+		    height: 256,
+		    parent: 'phaser-img-previewer',
+		    scene: {
+		        preload: preload,
+		        create: create
+		    }
+		};
+
+		// var files = [];
+
+		var game = new Phaser.Game(config);
+
+		// function create ()
+		// {
+		//     var text = this.add.text(10, 10, 'Click to start the loader', { font: '16px Courier', fill: '#00ff00' });
+
+		//     this.input.once('pointerup', function () {
+		  
+		//         text.setVisible(false);
+
+		//         // this.load.setPath('assets/sprites/');
+
+		//         this.load.on('filecomplete', addNextFile, this);
+
+		//         //  It needs _something_ in the queue, or `start` will just exit immediately.
+		//         this.load.image('atari130xe');
+
+		//         this.load.start();
+		    
+		//     }, this);
+		// }
+
+		// function addNextFile (key, type, texture)
+		// {
+		//     var x = Phaser.Math.Between(0, 800);
+		//     var y = Phaser.Math.Between(0, 600);
+
+		//     this.add.image(x, y, key);
+
+		//     var nextFile = files.pop();
+
+		//     if (nextFile)
+		//     {
+		//         this.load.image(nextFile);
+		//     }
+		// }
+		var platform;
+		var counter = 0;
+
+		function preload() {
+			platform = this;
+
+		}
+
+		function create() {	
+			// Handle Base 64 Image From Here Not From PreLoad
+			
+			// var dataURI = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQY............"
+
+			this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#" + bgColor);
+			
+
+			var text = this.add.text(10, 10, 'Click to start the loader', { font: '16px Courier', fill: '#00ff00' });
+
+			this.input.once('pointerup', function () {
+
+				this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#" + bgColor);
+
+				text.setVisible(false);
+
+				console.log("pre files pop", files);
+
+				var i=0;
+				var filesLength = files.length;
+				for(i=0;i<filesLength;i++){
+					var nextFile = files.pop();
+					platform.textures.addBase64('imgBase64_'+i, nextFile);
+					// console.log("pop texture",i,nextFile);
+				}
+
+				
+				
+				// Loader to wait all base64 Image loaded
+				platform.textures.on('onload', function() { 
+					counter++;			
+				});
+				
+				// Timer check when all based64 assets have been loaded
+				platform.customTimer = platform.time.addEvent({ delay: 500, callback: function callback() {
+					
+					// Adjust counter maximum as you ecpect. For now just one based64 assets need to be loaded only
+					if (counter === filesLength) {
+					
+						// Destroy timer to save memory
+						platform.customTimer.remove(false);
+					
+						// Add base64 image and position it		
+						// platform.imgBase64Sprite = platform.add.sprite(game.config.width / 2, game.config.height / 2, 'imgBase64');
+
+						platform.gameitems = platform.add.group();
+
+						for (var i = 0; i < filesLength; i++) {
+							var newobj = platform.gameitems.create(
+																						game.config.width / 2, 
+																						game.config.height / 2, 
+																						'imgBase64_'+i);
+
+							newobj.setZ(i);
+
+							if(i==0 && costumeTint){
+								newobj.setTint("0x"+costumeTint);
+							}
+							if(i==1 && sec1Tint){
+								newobj.setTint("0x"+sec1Tint);
+							}
+							if(i==2 && sec2Tint){
+								newobj.setTint("0x"+sec2Tint);
+							}
+							if(i==3 && sec3Tint){
+								newobj.setTint("0x"+sec3Tint);
+							}
+							if(i==4 && silTint){
+								newobj.setTint("0x"+silTint);
+							}
+						}
+					
+					}
+				
+				}, callbackScope: platform, loop: true});
+
+			}, this);
+		}	
+
+
+  </script>
+
+</body>
+</html>
